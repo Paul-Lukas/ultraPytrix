@@ -2,8 +2,9 @@ import random
 
 import numpy as np
 
-class FlappyBird():
-    def __init__(self):
+
+class FlappyBird:
+    def __init__(self, base, matrix):
         self.width = 15
         self.background_width = 30
         self.height = 30

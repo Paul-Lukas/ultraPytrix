@@ -39,12 +39,12 @@ class Base:
         self.__initUltrasonic()
 
         # TODO: catch error
-        import src.gameFiles.game as game
-        self.gameObj = game.Game(self, self.output)
+        import src.gameFiles.FlappyBird as game
+        self.gameObj = game.FlappyBird(self, self.output)
 
         # TODO: catch error
-        import src.gameFiles.schoner as schoner
-        self.schonerObj = schoner.Schoner(self, self.output)
+        import src.gameFiles.Screensaver as schoner
+        self.schonerObj = schoner.Screensaver(self, self.output)
 
     def __initConf(self):
         self.config = conf.Config()

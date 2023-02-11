@@ -1,4 +1,4 @@
-class Schoner:
+class Screensaver:
     def __init__(self, base, matrix):
         pass
 

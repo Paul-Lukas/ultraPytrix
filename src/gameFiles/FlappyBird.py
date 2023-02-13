@@ -3,13 +3,22 @@ import numpy as np
 
 class FlappyBird():
     def __init__(self):
+        # Array-dimension variables
         self.width = 15
         self.background_width = 30
         self.height = 30
-        self.game_over = False
-        self.level = 1
+
+        # Creating the arrays
         self.background = [[0 for j in range(self.height)] for i in range(self.background_width)]
         self.game = [[0 for j in range(self.height)] for i in range(self.width)]
+
+        # Game-logic variables
+        self.game_over = False
+        self.level = 1
+        self.pipe_number = 0
+        self.pipe_x_pos = 0
+        self.pipe_y_pos = 0
+        self.pipe_gap = 1
 
     def run(self):
         self.set_bird_pos(int(self.height/2))
@@ -143,19 +152,74 @@ class FlappyBird():
             self.level_manager()
             self.hit_detection()
 
-    # TODO: Should decide whether pipes or other things are spawned
-    def level_manager(self):
-        # Idea 4 pipes = 1 level
-        # Horizontal pipe = 1 level
-        # after level 3 horizontal pipes should change over time
-        # difficulty = gap and speed(?)
-        if self.level == 1:  # 4 pipes
-            pass
-        if self.level == 2:  # Horizontal pipe
-            pass
-        if self.level >= 3:  # odd = changing horizontal pipe | even = 4 pipes
-            pass
+    # Depending on the Level changes obstacle type
+    def manage_level(self):
+        if (self.level % 2) != 0: # Even
+            self.manage_pipe()
+        else: # Odd
+            if self.level == 2:
+                self.manage_horizontal_pipe(False)
+            else:
+                self.manage_horizontal_pipe(True)
 
+    # Draws a pipe with the given coordinates and gap
+    def draw_pipe(self, x_pos, y_pos, gap):
+        self.clear(1, 2)
+        upper_y_pos = int(y_pos - gap)
+        lower_y_pos = int(y_pos + gap)
+
+        for i in range(self.height):
+            if i < upper_y_pos:
+                self.game[x_pos][i] = 2
+            if i > lower_y_pos:
+                self.game[x_pos][i] = 2
+            if i == upper_y_pos or i == lower_y_pos:
+                self.game[x_pos][i] = 2
+                if i >= 0:
+                    self.game[x_pos - 1][i] = 2
+                if i <= (self.width - 1):
+                    self.game[x_pos + 1][i] = 2
+
+    # Moves the pipes and manages gap depending on level
+    def manage_pipe(self):
+        if current_pipe_number >= 5:
+            return # TODO: What should happen in manage_level()
+
+        # New pipe
+        if current_x_pos == 0:
+            self.pipe_number += 1
+            self.pipe_x_pos = (self.width - 1)
+            self.pipe_y_pos = random.randint((self.get_gap(self.pipe_gap) / 2) + 1, (self.height - 1) - ((self.get_gap(self.pipe_gap) / 2) + 1))
+            self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.pipe_gap))
+
+        # Existing pipe
+        if (current_x_pos <= (self.width - 1)) or current_x_pos > 0:
+            self.pipe_x_pos += -1
+            self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.pipe_gap))
+
+    # Draws a horizontal pipe with the given coordinates and gap
+    def draw_horizontal_pipe(self, x_pos, y_pos, gap):
+        # Move existing horizontal pipes
+        for i in range(self.width):
+            for j in range(self.height):
+                if self.game[i][j] == 1:
+                    continue
+                if i != (self.width - 1) and self.game[i][j] == 2:
+                    self.game[i][j] = self.game[i + 1][j]
+
+    # Manages a horizontal pipe
+    def manage_horizontal_pipe(self):
+        pass
+
+    def get_gap(self, level):
+        gaps = {
+            1: 12,
+            2: 10,
+            3: 8,
+            4: 6,
+            5: 4
+        }
+        return gaps.get(value, -1)
 
 
 if __name__ == '__main__':

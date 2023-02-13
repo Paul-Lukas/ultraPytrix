@@ -18,7 +18,6 @@ class FlappyBird():
         self.pipe_number = 0
         self.pipe_x_pos = 0
         self.pipe_y_pos = 0
-        self.pipe_gap = 1
 
     def run(self):
         self.set_bird_pos(int(self.height/2))
@@ -183,20 +182,22 @@ class FlappyBird():
 
     # Moves the pipes and manages gap depending on level
     def manage_pipe(self):
-        if current_pipe_number >= 5:
-            return # TODO: What should happen in manage_level()
+        if self.pipe_number >= 5:
+            self.pipe_number = 0
+            self.level += 1
+            return
 
         # New pipe
-        if current_x_pos == 0:
+        if self.pipe_x_pos == 0:
             self.pipe_number += 1
             self.pipe_x_pos = (self.width - 1)
-            self.pipe_y_pos = random.randint((self.get_gap(self.pipe_gap) / 2) + 1, (self.height - 1) - ((self.get_gap(self.pipe_gap) / 2) + 1))
-            self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.pipe_gap))
+            self.pipe_y_pos = random.randint((self.get_gap(self.level) / 2) + 1, (self.height - 1) - ((self.get_gap(self.level) / 2) + 1))
+            self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
 
         # Existing pipe
-        if (current_x_pos <= (self.width - 1)) or current_x_pos > 0:
+        if (self.pipe_x_pos <= (self.width - 1)) or (self.pipe_x_pos > 0):
             self.pipe_x_pos += -1
-            self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.pipe_gap))
+            self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
 
     # Draws a horizontal pipe with the given coordinates and gap
     def draw_horizontal_pipe(self, x_pos, y_pos, gap):

@@ -48,6 +48,8 @@ class NeoMatrix:
             pixelChange = (self.utils.getNumForCords(changes[i][0], changes[i][1], self.height))
             self.__pixels[pixelChange] = self.matrix[changes[i][0]][changes[i][1]]
         self.__pixels.write()
+        
+        print("neopixel submittttttttttttet")
 
     def fill_all(self, color: tuple):
         """

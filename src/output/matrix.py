@@ -70,10 +70,12 @@ class NeoMatrix:
         """
         if len(matrix) != len(self.matrix):
             print("matrix größe falsch")
+            print("len1" + string(len(matrix)))
             return False
         else:
             if len(matrix[0]) != len(self.matrix[0]):
                 print("matrix größe falsch")
+                print("len2" + string(len(matrix[0])))
                 return False
             else:
                 self.matrix = matrix

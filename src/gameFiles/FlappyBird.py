@@ -21,10 +21,14 @@ class FlappyBird():
         self.pipe_number = 0
         self.pipe_x_pos = 0
         self.pipe_y_pos = 0
+        
+        print("flappybird init fertig")
 
     def run(self):
+        print("hallo ich bin eine run von Felix")
         self.set_bird_pos(int(self.height/2))
         self.generate_clouds(True, 0)
+        print("clock jetzt")
         self.clock()
 
     # Deletes the old and sets the new player y-position

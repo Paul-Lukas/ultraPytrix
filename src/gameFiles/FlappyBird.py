@@ -159,7 +159,6 @@ class FlappyBird():
             self.move_clouds()
             if self.check_clouds():
             	self.generate_clouds(False, 15)
-            time.sleep(0.5)
             
             # Translation:
             self.output.set_matrix(self.translate_arrays())

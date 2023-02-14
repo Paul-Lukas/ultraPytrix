@@ -69,10 +69,13 @@ class NeoMatrix:
         :return: true if lengh is right, false if not
         """
         if len(matrix) != len(self.matrix):
+            print("matrix größe falsch")
             return False
         else:
             if len(matrix[0]) != len(self.matrix[0]):
+                print("matrix größe falsch")
                 return False
             else:
                 self.matrix = matrix
+                print("matrix ERFOLG")
                 return True

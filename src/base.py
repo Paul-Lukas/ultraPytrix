@@ -57,8 +57,8 @@ class Base:
         self.output = NeoMatrix(int(self.width), int(self.height), pixels)
 
     def __initUltrasonic(self):
-        GPIO.setmode(GPIO.BOARD)
-
+        #GPIO.setmode(GPIO.BOARD)
+        
         GPIO.setup(self.echo, GPIO.IN)
         GPIO.setup(self.trigger, GPIO.OUT)
 

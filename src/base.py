@@ -63,16 +63,7 @@ class Base:
         GPIO.setup(self.trigger, GPIO.OUT)
 
     def run(self):
-        while True:
-            schonerTask = asyncio.create_task(self.__schoner())
-
-            while self.getInput() > self.wakeupCM:
-                pass
-
-            schonerTask.cancel()
-
-            # TODO: Catch error
-            self.gameObj.run()
+        self.gameObj.run()
 
     async def __schoner(self):
         try:

@@ -155,6 +155,8 @@ class FlappyBird():
     # Game-Loop
     def clock(self):
         while not self.game_over:
+            print("CLOCK!!!")
+            
             # Game:
             #self.level_manager()
             #self.hit_detection()

@@ -63,6 +63,7 @@ class Base:
         GPIO.setup(self.trigger, GPIO.OUT)
 
     def run(self):
+        print("alle fehler ab jetzt sind Felix Schuld!!!")
         self.gameObj.run()
 
     async def __schoner(self):

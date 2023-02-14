@@ -79,7 +79,7 @@ class FlappyBird():
 
                 for j in range(length[i]):
                     if (position[i] + j) < self.width:
-                        self.background[i][(position[i] + j) + offset] = 1
+                        self.background[(position[i] + j) + offset][i] = 1
 
     # Moves the clouds from right to left at the rate of 1 pixel
     def move_clouds(self):

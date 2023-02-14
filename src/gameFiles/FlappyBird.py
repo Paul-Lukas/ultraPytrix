@@ -154,13 +154,10 @@ class FlappyBird():
 
     # Depending on the Level changes obstacle type
     def manage_level(self):
-        if (self.level % 2) != 0: # Even
+        if (self.level % 2) != 0:  # Even
             self.manage_pipe()
-        else: # Odd
-            if self.level == 2:
-                self.manage_horizontal_pipe(False)
-            else:
-                self.manage_horizontal_pipe(True)
+        else:  # Odd
+            self.manage_horizontal_pipe()
 
     # Draws a pipe with the given coordinates and gap
     def draw_pipe(self, x_pos, y_pos, gap):
@@ -182,8 +179,11 @@ class FlappyBird():
 
     # Moves the pipes and manages gap depending on level
     def manage_pipe(self):
+        # Done
         if self.pipe_number >= 5:
             self.pipe_number = 0
+            self.pipe_x_pos = 0
+            self.pipe_y_pos = 0
             self.level += 1
             return
 
@@ -199,9 +199,8 @@ class FlappyBird():
             self.pipe_x_pos += -1
             self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
 
-    # Draws a horizontal pipe with the given coordinates and gap
-    def draw_horizontal_pipe(self, x_pos, y_pos, gap):
-        # Move existing horizontal pipes
+    # Move(s) existing horizontal pipe(s)
+    def move_horizontal_pipes(self):
         for i in range(self.width):
             for j in range(self.height):
                 if self.game[i][j] == 1:
@@ -211,20 +210,81 @@ class FlappyBird():
                         self.game[i][j] = 0
                     else:
                         self.game[i][j] = self.game[i + 1][j]
+        self.pipe_x_pos += -1
+
+    # Check if a horizontal pipe is comlplete (length = 3)
+    def check_horizontal_pipe(self, x_pos, y_pos, gap):
+        distance = int(gap / 2)
+        for i in range(3):
+            try:
+                if (self.game[x_pos][y_pos + distance] == 2) and (self.game[x_pos][y_pos - distance] == 2):
+                    continue
+            except:
+                return i-1
+        return 2
+
+    # Draws the beginning of a horizontal pipe with the given coordinates and gap
+    def draw_horizontal_pipe(self, x_pos, y_pos, gap, first):
+        distance = int(gap/2)
+        self.game[x_pos][y_pos + distance]
+        self.game[x_pos][y_pos - distance]
+        if first:
+            self.pipe_x_pos = x_pos
+            self.pipe_y_pos = y_pos
+            # gap = get_gap(self.level)
 
     # Manages a horizontal pipe
     def manage_horizontal_pipe(self):
-        pass
+        # Done
+        if self.pipe_number >= 5:
+            self.pipe_number = 0
+            self.pipe_x_pos = 0
+            self.pipe_y_pos = 0
+            self.level += 1
+            return
+
+        # New pipe
+        if self.pipe_x_pos == 0:
+            self.pipe_x_pos = (self.width - 1)
+            self.pipe_y_pos = random.randint((self.get_gap(self.level) / 2) + 1,
+                                             (self.height - 1) - ((self.get_gap(self.level) / 2) + 1))
+            self.draw_horizontal_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
+
+        # Existing pipe(s)
+        if (self.pipe_x_pos <= (self.width - 1)) or (self.pipe_x_pos > 0):
+            status = self.check_horizontal_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
+            # Pipe parts are missing
+            if status == 1 or status == 0:
+                self.move_horizontal_pipes()
+                self.draw_horizontal_pipe(self.pipe_x_pos + 1, self.pipe_y_pos, self.get_gap(self.level))
+            # Pipe is complete
+            if status == 2:
+                self.pipe_number += 1
+                if pipe_number <= 4:
+                    self.move_horizontal_pipes()
+                    # New Pipe
+                    self.pipe_x_pos = (self.width - 1)
+                    direction = random.randint(1, 2)
+                    if direction == 2:
+                        direction = -1
+                    self.pipe_y_pos += direction # move it down or upwards
+                    self.draw_horizontal_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
+
 
     def get_gap(self, level):
+        if level > 8:
+            return 4
+        fixed_level = level # TODO: Pray this works
+        if (self.level % 2) != 0:
+            fixed_level = level + 1
+
         gaps = {
-            1: 12,
-            2: 10,
-            3: 8,
-            4: 6,
-            5: 4
+            2: 12,
+            4: 10,
+            6: 8,
+            8: 6
         }
-        return gaps.get(value, -1)
+        return gaps.get(fixed_level, -1)
 
 
 if __name__ == '__main__':

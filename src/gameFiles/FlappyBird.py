@@ -1,5 +1,4 @@
 import random
-import numpy as np
 import time
 
 class FlappyBird():
@@ -21,15 +20,12 @@ class FlappyBird():
         self.pipe_number = 0
         self.pipe_x_pos = 0
         self.pipe_y_pos = 0
-        
-        print("flappybird init fertig")
 
     def run(self):
-        print("hallo ich bin eine run von Felix")
         self.set_bird_pos(int(self.height/2))
         self.generate_clouds(True, 0)
-        print("clock jetzt")
-        self.clock()
+        self.show_array(self.background)
+        #self.clock()
 
     # Deletes the old and sets the new player y-position
     def set_bird_pos(self, y_pos):
@@ -52,14 +48,12 @@ class FlappyBird():
                 elif (array == 2) and (self.background[i][j] in value_type):
                     self.background[i][j] = 0
 
-    # Prints an array
+    # Prints a given array
     def show_array(self, array):
-        if array == 1:
-            print(np.matrix(self.game))
-        elif array == 2:
-            print(np.matrix(self.background))
-        else:
-            print(np.matrix(self.translate_arrays()))
+        for i in range(len(array[0])):
+            print("\n")
+            for j in range(len(array)):
+                print(array[j][i], end=' ')
 
     # Checks if the not visible side of background[][] has no clouds in it
     def check_clouds(self):
@@ -155,8 +149,6 @@ class FlappyBird():
     # Game-Loop
     def clock(self):
         while not self.game_over:
-            print("CLOCK!!!")
-            
             # Game:
             #self.level_manager()
             #self.hit_detection()
@@ -280,7 +272,7 @@ class FlappyBird():
             # Pipe is complete
             if status == 2:
                 self.pipe_number += 1
-                if pipe_number <= 4:
+                if self.pipe_number <= 4:
                     self.move_horizontal_pipes()
                     # New Pipe
                     self.pipe_x_pos = (self.width - 1)

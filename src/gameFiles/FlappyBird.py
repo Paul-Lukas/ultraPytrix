@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import time
 
 class FlappyBird():
     def __init__(self):
@@ -22,9 +23,7 @@ class FlappyBird():
     def run(self):
         self.set_bird_pos(int(self.height/2))
         self.generate_clouds(True, 0)
-        self.draw_pipe(8, 13, 2)
-        self.show_array(1)
-        #self.clock()
+        self.clock()
 
     # Deletes the old and sets the new player y-position
     def set_bird_pos(self, y_pos):
@@ -51,17 +50,18 @@ class FlappyBird():
     def show_array(self, array):
         if array == 1:
             print(np.matrix(self.game))
-        else:
+        elif array == 2:
             print(np.matrix(self.background))
+        else:
+            print(np.matrix(self.translate_arrays()))
 
     # Checks if the not visible side of background[][] has no clouds in it
     def check_clouds(self):
-        empty = True
         for i in range(self.width):
             for j in range(self.height):
                 if self.background[(i + self.width)][j] == 1:
-                    empty = False
-        return empty
+                    return False
+        return True
 
     # Generates cloud paterns for background[][]
     def generate_clouds(self, startup, offset):
@@ -83,11 +83,11 @@ class FlappyBird():
 
     # Moves the clouds from right to left at the rate of 1 pixel
     def move_clouds(self):
-        for i in range((self.background_width-1)):
+        for i in range(self.background_width - 1):  # Move every row
             for j in range(self.height):
-                self.background[i][j] = self.game[(i+1)][j]
-        for k in range(self.height):
-            self.background[self.background_width][k] = 0
+                self.background[i][j] = self.background[(i+1)][j]
+        for k in range(self.height):  # Delete the last row
+            self.background[(self.background_width - 1)][k] = 0
 
     # Translates the values inside game[][] to match together[][]
     def translate_array_values(self, value):
@@ -149,8 +149,12 @@ class FlappyBird():
     # Game-Loop
     def clock(self):
         while not self.game_over:
-            self.level_manager()
-            self.hit_detection()
+            #self.level_manager()
+            #self.hit_detection()
+            print("")
+            self.show_array(2)
+            self.move_clouds()
+            time.sleep(0.5)
 
     # Depending on the Level changes obstacle type
     def manage_level(self):

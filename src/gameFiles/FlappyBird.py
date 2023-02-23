@@ -24,8 +24,7 @@ class FlappyBird():
     def run(self):
         self.set_bird_pos(int(self.height/2))
         self.generate_clouds(True, 0)
-        self.show_array(self.background)
-        #self.clock()
+        self.clock()
 
     # Deletes the old and sets the new player y-position
     def set_bird_pos(self, y_pos):
@@ -157,7 +156,7 @@ class FlappyBird():
             self.move_clouds()
             if self.check_clouds():
             	self.generate_clouds(False, 15)
-            time.sleep(0.5)
+            #time.sleep(0.5)
             
             # Translation:
             self.output.set_matrix(self.translate_arrays())
@@ -174,19 +173,18 @@ class FlappyBird():
     # Draws a pipe with the given coordinates and gap
     def draw_pipe(self, x_pos, y_pos, gap):
         self.clear(1, 2)
-        upper_y_pos = int(y_pos - gap)
-        lower_y_pos = int(y_pos + gap)
+        upper_y_pos = int(y_pos - ((gap/2)+1))
+        lower_y_pos = int(y_pos + ((gap/2)+1))
 
         for i in range(self.height):
-            if i < upper_y_pos:
+            if ((i >= 0) and (i < upper_y_pos)) or ((i <= (self.height - 1)) and (i > lower_y_pos)):
                 self.game[x_pos][i] = 2
-            if i > lower_y_pos:
-                self.game[x_pos][i] = 2
+
             if i == upper_y_pos or i == lower_y_pos:
                 self.game[x_pos][i] = 2
-                if i > 0:
+                if (x_pos - 1) >= 0:
                     self.game[x_pos - 1][i] = 2
-                if i < (self.width - 1):
+                if (x_pos + 1) <= (self.width - 1):
                     self.game[x_pos + 1][i] = 2
 
     # Moves the pipes and manages gap depending on level

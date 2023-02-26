@@ -1,11 +1,12 @@
 import random
 import time
 
+
 class FlappyBird():
     def __init__(self):
-        #Before: self, base, output
-        #self.output = output
-        #self.base = base
+        # Before: self, base, output
+        # self.output = output
+        # self.base = base
         # Array-dimension variables
         self.width = 15
         self.background_width = 30
@@ -15,7 +16,7 @@ class FlappyBird():
         self.background = [[0 for j in range(self.height)] for i in range(self.background_width)]
         self.game = [[0 for j in range(self.height)] for i in range(self.width)]
 
-        # Game-logic variables 
+        # Game-logic variables
         self.game_over = False
         self.level = 1
         self.pipe_number = 0
@@ -23,7 +24,7 @@ class FlappyBird():
         self.pipe_y_pos = 0
 
     def run(self):
-        self.set_bird_pos(int(self.height/2))
+        self.set_bird_pos(int(self.height / 2))
         self.generate_clouds(True, 0)
         self.clock()
 
@@ -85,7 +86,7 @@ class FlappyBird():
     def move_clouds(self):
         for i in range(self.background_width - 1):  # Move every row
             for j in range(self.height):
-                self.background[i][j] = self.background[(i+1)][j]
+                self.background[i][j] = self.background[(i + 1)][j]
         for k in range(self.height):  # Delete the last row
             self.background[(self.background_width - 1)][k] = 0
 
@@ -148,24 +149,25 @@ class FlappyBird():
 
     # Game-Loop
     def clock(self):
+        self.pipe_x_pos = 0
         while not self.game_over:
             # Game:
-            #self.level_manager()
-            #self.hit_detection()
-            
+            # self.manage_level()
+            # self.hit_detection()
+
             # Background:
             self.move_clouds()
             if self.check_clouds():
-            	self.generate_clouds(False, 15)
-            #time.sleep(0.5)
-            
+                self.generate_clouds(False, 15)
+            # time.sleep(0.5)
+
+            # Debug:
             self.manage_horizontal_pipe()
             print(self.show_array(self.game))
-            
+
             # Translation:
-            #self.output.set_matrix(self.translate_arrays())
-            #self.output.submit_all()
-            
+            # self.output.set_matrix(self.translate_arrays())
+            # self.output.submit_all()
 
     # Depending on the Level changes obstacle type
     def manage_level(self):
@@ -177,21 +179,21 @@ class FlappyBird():
     # Draws a pipe with the given coordinates and gap
     def draw_pipe(self, x_pos, y_pos, gap):
         self.clear(1, 2)
-        upper_y_pos = int(y_pos - ((gap/2)+1))
-        lower_y_pos = int(y_pos + ((gap/2)+1))
+        upper_y_pos = int(y_pos - ((gap / 2) + 1))
+        lower_y_pos = int(y_pos + ((gap / 2) + 1))
 
         for i in range(self.height):
             if i == upper_y_pos or i == lower_y_pos:
-                if x_pos >= 0 and x_pos <= (self.width - 1):  # Middle piece
+                if 0 <= x_pos <= (self.width - 1):  # Middle piece
                     self.game[x_pos][i] = 2
-                if (x_pos - 1) >= 0 and (x_pos - 1) < self.width:  # Left piece
+                if 0 <= (x_pos - 1) < self.width:  # Left piece
                     self.game[x_pos - 1][i] = 2
-                if (x_pos + 1) <= (self.width - 1) and (x_pos + 1) >= 0:  # Right piece
+                if (self.width - 1) >= (x_pos + 1) >= 0:  # Right piece
                     self.game[x_pos + 1][i] = 2
-                    
+
             if x_pos == -1 or x_pos == self.width:
                 continue
-                
+
             if ((i >= 0) and (i < upper_y_pos)) or ((i <= (self.height - 1)) and (i > lower_y_pos)):
                 self.game[x_pos][i] = 2
 
@@ -209,7 +211,8 @@ class FlappyBird():
         if self.pipe_x_pos == -1:
             self.pipe_number += 1
             self.pipe_x_pos = self.width
-            self.pipe_y_pos = random.randint((self.get_gap(self.level) / 2) + 1, (self.height - 1) - ((self.get_gap(self.level) / 2) + 1))
+            self.pipe_y_pos = random.randint((self.get_gap(self.level) / 2) + 1,
+                                             (self.height - 1) - ((self.get_gap(self.level) / 2) + 1))
             self.draw_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
 
         # Existing pipe
@@ -232,31 +235,24 @@ class FlappyBird():
 
     # Check if a horizontal pipe is comlplete (length = 3)
     def check_horizontal_pipe(self, x_pos, y_pos, gap):
-        upper_y_pos = int(y_pos - ((gap/2)+1))
-        lower_y_pos = int(y_pos + ((gap/2)+1))
+        upper_y_pos = int(y_pos - ((gap / 2) + 1))
+        lower_y_pos = int(y_pos + ((gap / 2) + 1))
         length = 0
-        
+
         for i in range(3):
+            if (x_pos + i) > (self.width - 1):
+                break
             if (self.game[x_pos + i][upper_y_pos] == 2) and (self.game[x_pos + i][lower_y_pos] == 2):
-                length += 1 
+                length += 1
+
         return length
-        
-        
-        distance = int(gap / 2) + 1
-        for i in range(3):
-            try:
-                if (self.game[x_pos][y_pos + distance] == 2) and (self.game[x_pos][y_pos - distance] == 2):
-                    continue
-            except:
-                return i-1
-        return 2
 
     # Draws the beginning of a horizontal pipe with the given coordinates and gap
     def draw_horizontal_pipe(self, x_pos, y_pos, gap):
-        upper_y_pos = int(y_pos - ((gap/2)+1))
-        lower_y_pos = int(y_pos + ((gap/2)+1))
-        
-        if x_pos >= 0 and x_pos <= (self.width - 1):
+        upper_y_pos = int(y_pos - ((gap / 2) + 1))
+        lower_y_pos = int(y_pos + ((gap / 2) + 1))
+
+        if 0 <= x_pos <= (self.width - 1):
             self.game[x_pos][upper_y_pos] = 2
             self.game[x_pos][lower_y_pos] = 2
 
@@ -280,12 +276,14 @@ class FlappyBird():
         # Existing pipe(s)
         if (self.pipe_x_pos <= (self.width - 1)) or (self.pipe_x_pos > 0):
             status = self.check_horizontal_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
+            print("Status:" + str(status))
             # Pipe parts are missing
-            if status == 1 or status == 0:
+            if status == 1 or status == 2:
                 self.move_horizontal_pipes()
-                self.draw_horizontal_pipe(self.pipe_x_pos + 1, self.pipe_y_pos, self.get_gap(self.level))
+                self.pipe_x_pos += - 1
+                self.draw_horizontal_pipe((self.width - 1), self.pipe_y_pos, self.get_gap(self.level))
             # Pipe is complete
-            if status == 2:
+            if status == 3:
                 self.pipe_number += 1
                 if self.pipe_number <= 4:
                     self.move_horizontal_pipes()
@@ -297,14 +295,18 @@ class FlappyBird():
                         direction = -1
                     if direction == 3:
                         direction = 0
-                    self.pipe_y_pos += direction # move it down or upwards
-                    self.draw_horizontal_pipe(self.pipe_x_pos, self.pipe_y_pos, self.get_gap(self.level))
 
+                    # Out of bounds:
+                    if 0 <= (self.pipe_y_pos + direction) <= (self.height - 1):
+                        self.pipe_y_pos += direction  # move it down or upwards
+                    else:
+                        self.pipe_y_pos += (direction * -1)
+                    self.draw_horizontal_pipe((self.width - 1), self.pipe_y_pos, self.get_gap(self.level))
 
     def get_gap(self, level):
         if level > 8:
             return 4
-        fixed_level = level # TODO: Pray this works
+        fixed_level = level
         if (self.level % 2) != 0:
             fixed_level = level + 1
 

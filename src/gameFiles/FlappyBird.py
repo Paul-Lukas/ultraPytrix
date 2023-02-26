@@ -149,25 +149,21 @@ class FlappyBird():
 
     # Game-Loop
     def clock(self):
-        self.pipe_x_pos = 0
         while not self.game_over:
             # Game:
-            # self.manage_level()
-            # self.hit_detection()
+            if self.hit_detection():
+                self.game_over = True
+                continue
+            self.manage_level()
 
             # Background:
             self.move_clouds()
             if self.check_clouds():
                 self.generate_clouds(False, 15)
-            # time.sleep(0.5)
-
-            # Debug:
-            self.manage_horizontal_pipe()
-            print(self.show_array(self.game))
 
             # Translation:
-            # self.output.set_matrix(self.translate_arrays())
-            # self.output.submit_all()
+            self.output.set_matrix(self.translate_arrays())
+            self.output.submit_all()
 
     # Depending on the Level changes obstacle type
     def manage_level(self):

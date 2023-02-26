@@ -123,6 +123,21 @@ class FlappyBird():
                 final[i][j] = self.translate_color_values(together[i][j])
         return final
 
+    # Flips the array
+    def debug_mirror_array(self, array):
+        new_array = []
+        for i in range(len(array)):
+            new_array.append(array[i][::-1])
+        return new_array
+
+    # Rotates the array counterclockwise 90 degrees
+    def debug_rotate_array(self, array, amount):
+        new_array = [[array[j][i] for j in range(len(array))] for i in range(len(array[0]) - 1, -1, -1)]
+        if amount > 0:
+            return self.debug_rotate_array(new_array, amount - 1)
+        else:
+            return new_array
+
     # Checks if nothing is between new and old position before movement
     def move_detection(self, old_y_pos, new_y_pos):
         if old_y_pos == new_y_pos:
@@ -162,8 +177,8 @@ class FlappyBird():
                 self.generate_clouds(False, 15)
 
             # Translation:
-            self.output.set_matrix(self.translate_arrays())
-            self.output.submit_all()
+            # self.output.set_matrix(self.translate_arrays())
+            # self.output.submit_all()
 
     # Depending on the Level changes obstacle type
     def manage_level(self):

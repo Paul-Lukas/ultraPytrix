@@ -1,12 +1,9 @@
 import random
-import time
-
 
 class FlappyBird():
-    def __init__(self):
-        # Before: self, base, output
-        # self.output = output
-        # self.base = base
+    def __init__(self, base, output):
+        self.output = output
+        self.base = base
         # Array-dimension variables
         self.width = 15
         self.background_width = 30
@@ -177,8 +174,9 @@ class FlappyBird():
                 self.generate_clouds(False, 15)
 
             # Translation:
-            # self.output.set_matrix(self.translate_arrays())
-            # self.output.submit_all()
+            self.output.set_matrix(self.translate_arrays())
+            self.output.submit_all()
+        print("-- Flappy-Bird Ending --")
 
     # Depending on the Level changes obstacle type
     def manage_level(self):
@@ -328,8 +326,3 @@ class FlappyBird():
             8: 6
         }
         return gaps.get(fixed_level, -1)
-
-
-if __name__ == '__main__':
-    fb = FlappyBird()
-    fb.run()
